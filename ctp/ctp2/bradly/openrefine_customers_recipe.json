@@ -1,57 +1,42 @@
 [
   {
-    "op": "core/text-transform",
-    "engineConfig": { "facets": [], "mode": "row-based" },
-    "columnName": "email",
-    "expression": "value.trim().toLowercase()",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "email",
+    "expression": "grel:forEach(row.columnNames, c, if(isNull(cells.get(c)), \"\", cells.get(c).value.toString())).join(\"|\")",
+    "onError": "set-to-blank",
+    "newColumnName": "dup_key",
+    "columnInsertIndex": 0,
+    "description": "Créer la colonne dup_key à l’index 0 sur la base de la colonne email à l’aide de l’expression grel:forEach(row.columnNames, c, if(isNull(cells.get(c)), \"\", cells.get(c).value.toString())).join(\"|\")"
   },
   {
-    "op": "core/text-transform",
-    "engineConfig": { "facets": [], "mode": "row-based" },
-    "columnName": "phone",
-    "expression": "value.trim()",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10
+    "op": "core/row-reorder",
+    "mode": "row-based",
+    "sorting": {
+      "criteria": [
+        {
+          "valueType": "string",
+          "column": "dup_key",
+          "blankPosition": 2,
+          "errorPosition": 1,
+          "reverse": false,
+          "caseSensitive": true
+        }
+      ]
+    },
+    "description": "Reordonne les lignes"
   },
   {
-    "op": "core/text-transform",
-    "engineConfig": { "facets": [], "mode": "row-based" },
-    "columnName": "country",
-    "expression": "value.trim().toLowercase()",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10
-  },
-  {
-    "op": "core/text-transform",
-    "engineConfig": { "facets": [], "mode": "row-based" },
-    "columnName": "country",
-    "expression": "if(or(value == \"fr\", value == \"fra\", value == \"france\"), \"FR\", if(or(value == \"de\", value == \"deu\", value == \"germany\", value == \"allemagne\"), \"DE\", if(or(value == \"be\", value == \"bel\", value == \"belgium\", value == \"belgique\"), \"BE\", if(or(value == \"es\", value == \"spain\", value == \"espagne\"), \"ES\", value))))",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10
-  },
-  {
-    "op": "core/text-transform",
-    "engineConfig": { "facets": [], "mode": "row-based" },
-    "columnName": "loyalty_tier",
-    "expression": "value.trim().toLowercase()",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10
-  },
-  {
-    "op": "core/text-transform",
-    "engineConfig": { "facets": [], "mode": "row-based" },
-    "columnName": "loyalty_tier",
-    "expression": "if(value == \"platinium\", \"platinum\", value)",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10
+    "op": "core/blank-down",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dup_key",
+    "description": "Effacer les cellules de la colonne dup_key"
   },
   {
     "op": "core/row-removal",
@@ -59,18 +44,161 @@
       "facets": [
         {
           "type": "list",
-          "name": "rows_to_remove",
-          "columnName": "email",
-          "expression": "grel:or(row.index == 255, row.index == 641, row.index == 760, row.index == 969, row.index == 1076, row.index == 1138, row.index == 1209, row.index == 1233)",
+          "name": "dup_key",
+          "expression": "grel:isBlank(value)",
+          "columnName": "dup_key",
+          "invert": false,
           "omitBlank": false,
           "omitError": false,
-          "selection": [ { "v": { "v": true, "l": "true" } } ],
+          "selection": [
+            {
+              "v": {
+                "v": true,
+                "l": "true"
+              }
+            }
+          ],
           "selectBlank": false,
-          "selectError": false,
-          "invert": false
+          "selectError": false
         }
       ],
       "mode": "row-based"
-    }
+    },
+    "description": "Supprimer les lignes"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "dup_key",
+    "description": "Supprimer la colonne dup_key"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "first_name",
+    "expression": "grel:value.trim().replace(/\\s+/, \" \").toTitlecase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne first_name à laide de lexpression grel:value.trim().replace(/\\s+/, \" \").toTitlecase()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "last_name",
+    "expression": "grel:value.trim().replace(/\\s+/, \" \").toTitlecase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne last_name à laide de lexpression grel:value.trim().replace(/\\s+/, \" \").toTitlecase()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "email",
+    "expression": "grel:value.trim().toLowercase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne email à laide de lexpression grel:value.trim().toLowercase()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "country",
+    "expression": "grel:with(value.trim().toUppercase(), v, if(or(v == \"FR\", v == \"FRA\", v == \"FRANCE\"), \"FR\", if(or(v == \"DE\", v == \"DEU\", v == \"GERMANY\", v == \"ALLEMAGNE\"), \"DE\", if(or(v == \"ES\", v == \"ESP\", v == \"ESPAÑA\", v == \"ESPAGNE\", v == \"SPAIN\"), \"ES\", if(or(v == \"BE\", v == \"BEL\", v == \"BELGIQUE\", v == \"BELGIUM\"), \"BE\", null)))))",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne country à laide de lexpression grel:with(value.trim().toUppercase(), v, if(or(v == \"FR\", v == \"FRA\", v == \"FRANCE\"), \"FR\", if(or(v == \"DE\", v == \"DEU\", v == \"GERMANY\", v == \"ALLEMAGNE\"), \"DE\", if(or(v == \"ES\", v == \"ESP\", v == \"ESPAÑA\", v == \"ESPAGNE\", v == \"SPAIN\"), \"ES\", if(or(v == \"BE\", v == \"BEL\", v == \"BELGIQUE\", v == \"BELGIUM\"), \"BE\", null)))))"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "signup_date",
+    "expression": "grel:value.toString().trim().toDate(\"yyyy-MM-dd\", \"dd/MM/yyyy\", \"yyyy/MM/dd\", \"dd-MM-yyyy\").toString(\"yyyy-MM-dd\")",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne signup_date à laide de lexpression grel:value.toString().trim().toDate(\"yyyy-MM-dd\", \"dd/MM/yyyy\", \"yyyy/MM/dd\", \"dd-MM-yyyy\").toString(\"yyyy-MM-dd\")"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "birth_date",
+    "expression": "grel:value.toString().trim().toDate(\"yyyy-MM-dd\", \"dd/MM/yyyy\", \"yyyy/MM/dd\", \"dd-MM-yyyy\").toString(\"yyyy-MM-dd\")",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne birth_date à laide de lexpression grel:value.toString().trim().toDate(\"yyyy-MM-dd\", \"dd/MM/yyyy\", \"yyyy/MM/dd\", \"dd-MM-yyyy\").toString(\"yyyy-MM-dd\")"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "loyalty_tier",
+    "expression": "grel:value.trim().toLowercase().replace(\"platinium\", \"platinum\")",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne loyalty_tier à laide de lexpression grel:value.trim().toLowercase().replace(\"platinium\", \"platinum\")"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "postal_code",
+    "expression": "grel:if(and(cells.get(\"country\").value == \"FR\", isNonBlank(value)), with(\"00000\" + value.toString().trim(), s, s.substring(s.length() - 5)), value)",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne postal_code à laide de lexpression grel:if(and(cells.get(\"country\").value == \"FR\", isNonBlank(value)), with(\"00000\" + value.toString().trim(), s, s.substring(s.length() - 5)), value)"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "phone",
+    "expression": "grel:with(value.toString().replace(/[\\s.\\-]/, \"\"), p, if(p.startsWith(\"0033\"), \"+33\" + p.substring(4), if(p.startsWith(\"00\"), \"+\" + p.substring(2), if(and(p.length() == 10, p.startsWith(\"0\")), \"+33\" + p.substring(1), p))))",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Transformer le texte sur les cellules de la colonne phone à laide de lexpression grel:with(value.toString().replace(/[\\s.\\-]/, \"\"), p, if(p.startsWith(\"0033\"), \"+33\" + p.substring(4), if(p.startsWith(\"00\"), \"+\" + p.substring(2), if(and(p.length() == 10, p.startsWith(\"0\")), \"+33\" + p.substring(1), p))))"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "email",
+    "expression": "grel:if(isBlank(value), false, facetCount(value, \"value\", \"email\") > 1)",
+    "onError": "set-to-blank",
+    "newColumnName": "is_duplicate_email",
+    "columnInsertIndex": 4,
+    "description": "Créer la colonne is_duplicate_email à l’index 4 sur la base de la colonne email à l’aide de l’expression grel:if(isBlank(value), false, facetCount(value, \"value\", \"email\") > 1)"
   }
 ]

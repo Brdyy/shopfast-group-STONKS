@@ -1,0 +1,2 @@
+﻿Governance guard missing at ShopFast:
+There was no data contract with automated validation at ingestion: the payments batch in cents was loaded without any plausibility check (value range, median) to block it, and without a clear owner of the payments feed.
