@@ -1,0 +1,102 @@
+version: 2
+
+models:
+- name: fct_orders
+  description: One row per order, joining order and payment events to provide gross,
+    refunded and net revenue measures for reporting.
+  config:
+    tags:
+    - pii
+    meta:
+      owner: Paul Girard (Head of Finance)
+      steward: Karim Benali (Analytics Engineer)
+      domain: finance
+      tier: gold
+      contains_pii: true
+  columns:
+  - name: order_id
+    description: Unique ShopFast order identifier.
+    data_tests:
+    - unique
+    - not_null
+  - name: customer_id
+    description: ShopFast customer account identifier for the order.
+    config:
+      tags:
+      - pii
+      meta:
+        classification: confidential
+  - name: order_date
+    description: Date the order was placed.
+  - name: status
+    description: Normalized lifecycle status of the order.
+  - name: channel
+    description: Sales channel through which the order was placed.
+  - name: shipping_country
+    description: Destination country code for the order.
+  - name: gross_revenue_eur
+    description: Gross order total in euros, VAT and shipping included, before refunds.
+  - name: refunded_eur
+    description: Refunded payment amount for the order in euros.
+  - name: net_revenue_eur
+    description: '{{ doc("net_revenue") }}'
+
+- name: dim_customers
+  description: One row per customer account with lifetime order and net revenue metrics
+    and the last observed order date.
+  config:
+    tags:
+    - pii
+    meta:
+      owner: Sara Martin (Head of Sales)
+      steward: Karim Benali (Analytics Engineer)
+      domain: customer
+      tier: gold
+      contains_pii: true
+  columns:
+  - name: customer_id
+    description: ShopFast customer account identifier.
+    config:
+      tags:
+      - pii
+      meta:
+        classification: confidential
+    data_tests:
+    - unique
+    - not_null
+  - name: first_name
+    description: Customer given name.
+    config:
+      tags:
+      - pii
+      meta:
+        classification: confidential
+  - name: last_name
+    description: Customer family name.
+    config:
+      tags:
+      - pii
+      meta:
+        classification: confidential
+  - name: email
+    description: Customer login email address.
+    config:
+      tags:
+      - pii
+      meta:
+        classification: confidential
+  - name: country_code
+    description: Normalized ISO 3166-1 alpha-2 customer country code.
+  - name: loyalty_tier
+    description: Normalized loyalty programme tier.
+  - name: signup_date
+    description: Date customer account was created.
+  - name: has_marketing_consent
+    description: Whether customer opted in to marketing.
+  - name: lifetime_orders
+    description: Count of orders associated with the customer.
+  - name: last_order_date
+    description: Most recent order date associated with the customer; includes all
+      order statuses.
+  - name: lifetime_net_revenue_eur
+    description: Sum of net revenue for the customer in euros.

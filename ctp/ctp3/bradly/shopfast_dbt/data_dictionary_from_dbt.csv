@@ -1,0 +1,60 @@
+model,column,description,pii,classification,model_owner,domain,tier
+stg_products,product_id,Unique identifier for a ShopFast product.,False,,Product Operations,product,silver
+stg_products,sku,Stock-keeping unit used to identify the product.,False,,Product Operations,product,silver
+stg_products,product_name,Customer-facing product name.,False,,Product Operations,product,silver
+stg_products,category,Product category normalized to proper case.,False,,Product Operations,product,silver
+stg_products,list_price_eur,Catalogue list price in euros with two decimal places.,False,,Product Operations,product,silver
+stg_products,supplier,Name of the product supplier.,False,,Product Operations,product,silver
+stg_products,is_active,Whether the product is currently active in the catalogue.,False,,Product Operations,product,silver
+stg_customers,customer_id,Stable ShopFast account identifier; one person can have multiple accounts.,True,confidential,Sara Martin (Head of Sales),customer,gold
+stg_customers,first_name,Customer given name in proper case.,True,confidential,Sara Martin (Head of Sales),customer,gold
+stg_customers,last_name,Customer family name in proper case.,True,confidential,Sara Martin (Head of Sales),customer,gold
+stg_customers,email,"Login email address, trimmed and lower-cased.",True,confidential,Sara Martin (Head of Sales),customer,gold
+stg_customers,phone,Customer telephone number as supplied by ShopFast.,True,confidential,Sara Martin (Head of Sales),customer,gold
+stg_customers,birth_date,Customer date of birth parsed as a date.,True,restricted,Sara Martin (Head of Sales),customer,gold
+stg_customers,city,Customer city as supplied by ShopFast.,True,confidential,Sara Martin (Head of Sales),customer,gold
+stg_customers,country_code,Normalized ISO 3166-1 alpha-2 customer country code.,False,,Sara Martin (Head of Sales),customer,gold
+stg_customers,signup_date,Date the customer account was created.,False,,Sara Martin (Head of Sales),customer,gold
+stg_customers,has_marketing_consent,Whether the customer has opted in to marketing.,False,,Sara Martin (Head of Sales),customer,gold
+stg_customers,loyalty_tier,Normalized loyalty programme tier.,False,,Sara Martin (Head of Sales),customer,gold
+stg_order_items,order_item_id,Unique identifier for an order line.,False,,Sara Martin (Head of Sales),sales,silver
+stg_order_items,order_id,Order identifier to which this line belongs.,False,,Sara Martin (Head of Sales),sales,silver
+stg_order_items,product_id,Identifier of the product on this line.,False,,Sara Martin (Head of Sales),sales,silver
+stg_order_items,quantity,Number of units of the product on this line.,False,,Sara Martin (Head of Sales),sales,silver
+stg_order_items,unit_price_eur,Price per unit in euros with two decimal places.,False,,Sara Martin (Head of Sales),sales,silver
+stg_payments,payment_id,Unique identifier assigned to a payment event.,False,,Paul Girard (Head of Finance),finance,gold
+stg_payments,order_id,Order identifier associated with the payment event.,False,,Paul Girard (Head of Finance),finance,gold
+stg_payments,payment_date,Calendar date on which the payment event was recorded.,False,,Paul Girard (Head of Finance),finance,gold
+stg_payments,method,Payment instrument or provider method used.,False,,Paul Girard (Head of Finance),finance,gold
+stg_payments,amount,"Payment event amount in euros (EUR), to two decimal places; this value is not cents.",False,,Paul Girard (Head of Finance),finance,gold
+stg_payments,currency,ISO 4217 currency code for the payment event.,False,,Paul Girard (Head of Finance),finance,gold
+stg_payments,card_last4,Last four digits of a payment card when supplied; may be absent for non-card methods.,True,restricted,Paul Girard (Head of Finance),finance,gold
+stg_payments,payment_status,Whether the event is captured or refunded.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,order_id,Unique ShopFast order identifier.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,customer_id,ShopFast customer account identifier for the order.,True,confidential,Paul Girard (Head of Finance),finance,gold
+fct_orders,order_date,Date the order was placed.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,status,Normalized lifecycle status of the order.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,channel,Sales channel through which the order was placed.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,shipping_country,Destination country code for the order.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,gross_revenue_eur,"Gross order total in euros, VAT and shipping included, before refunds.",False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,refunded_eur,Refunded payment amount for the order in euros.,False,,Paul Girard (Head of Finance),finance,gold
+fct_orders,net_revenue_eur,"**Net revenue** is order revenue after refunds, excluding VAT, while retaining shipping fees.
+Rule: (gross order amount − refunds) ÷ 1.20, rounded to two decimals (ShopFast VAT assumption: 20%). Example: €120.00 paid, no refund → €100.00 net revenue. Owner: Paul Girard, Head of Finance · Steward: Karim Benali · Approved 2026-11-25.",False,,Paul Girard (Head of Finance),finance,gold
+dim_customers,customer_id,ShopFast customer account identifier.,True,confidential,Sara Martin (Head of Sales),customer,gold
+dim_customers,first_name,Customer given name.,True,confidential,Sara Martin (Head of Sales),customer,gold
+dim_customers,last_name,Customer family name.,True,confidential,Sara Martin (Head of Sales),customer,gold
+dim_customers,email,Customer login email address.,True,confidential,Sara Martin (Head of Sales),customer,gold
+dim_customers,country_code,Normalized ISO 3166-1 alpha-2 customer country code.,False,,Sara Martin (Head of Sales),customer,gold
+dim_customers,loyalty_tier,Normalized loyalty programme tier.,False,,Sara Martin (Head of Sales),customer,gold
+dim_customers,signup_date,Date customer account was created.,False,,Sara Martin (Head of Sales),customer,gold
+dim_customers,has_marketing_consent,Whether customer opted in to marketing.,False,,Sara Martin (Head of Sales),customer,gold
+dim_customers,lifetime_orders,Count of orders associated with the customer.,False,,Sara Martin (Head of Sales),customer,gold
+dim_customers,last_order_date,Most recent order date associated with the customer; includes all order statuses.,False,,Sara Martin (Head of Sales),customer,gold
+dim_customers,lifetime_net_revenue_eur,Sum of net revenue for the customer in euros.,False,,Sara Martin (Head of Sales),customer,gold
+stg_orders,order_id,Unique ShopFast order identifier.,False,,Sara Martin (Head of Sales),sales,gold
+stg_orders,customer_id,ShopFast account identifier associated with the order.,True,confidential,Sara Martin (Head of Sales),sales,gold
+stg_orders,order_date,Calendar date on which the order was placed.,False,,Sara Martin (Head of Sales),sales,gold
+stg_orders,status,Normalized order lifecycle status; canceled is standardized to cancelled.,False,,Sara Martin (Head of Sales),sales,gold
+stg_orders,channel,Sales channel through which the order was placed.,False,,Sara Martin (Head of Sales),sales,gold
+stg_orders,shipping_country,Two-letter destination country code recorded on the order.,False,,Sara Martin (Head of Sales),sales,gold
+stg_orders,total_amount_eur,"Order total in euros, including VAT, with two decimal places.",False,,Sara Martin (Head of Sales),sales,gold

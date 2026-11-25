@@ -1,0 +1,65 @@
+[0m13:02:51  Running with dbt=1.12.7
+[0m13:02:51  Registered adapter: duckdb=1.11.1
+[0m13:02:52  [[33mWARNING[0m][MissingArgumentsPropertyInGenericTestDeprecation]: Deprecated
+functionality
+Found top-level arguments to test `accepted_values` defined on 'stg_orders' in
+package 'shopfast' (models/staging/_staging.yml). Arguments to generic tests
+should be nested under the `arguments` property.
+[0m13:02:53  Found 7 models, 12 data tests, 5 sources, 3 exposures, 513 macros
+[0m13:02:53  
+[0m13:02:53  Concurrency: 2 threads (target='dev')
+[0m13:02:53  
+[0m13:02:53  1 of 22 START sql view model main.stg_customers ................................ [RUN]
+[0m13:02:53  2 of 22 START sql view model main.stg_order_items .............................. [RUN]
+[0m13:02:53  2 of 22 OK created sql view model main.stg_order_items ......................... [[32mOK[0m in 0.18s]
+[0m13:02:53  3 of 22 START sql view model main.stg_orders ................................... [RUN]
+[0m13:02:53  1 of 22 OK created sql view model main.stg_customers ........................... [[32mOK[0m in 0.18s]
+[0m13:02:53  4 of 22 START sql view model main.stg_payments ................................. [RUN]
+[0m13:02:53  3 of 22 OK created sql view model main.stg_orders .............................. [[32mOK[0m in 0.10s]
+[0m13:02:53  5 of 22 START sql view model main.stg_products ................................. [RUN]
+[0m13:02:53  4 of 22 OK created sql view model main.stg_payments ............................ [[32mOK[0m in 0.10s]
+[0m13:02:53  6 of 22 START test accepted_values_stg_customers_country_code__FR__DE__ES__BE .. [RUN]
+[0m13:02:53  5 of 22 OK created sql view model main.stg_products ............................ [[32mOK[0m in 0.10s]
+[0m13:02:53  6 of 22 PASS accepted_values_stg_customers_country_code__FR__DE__ES__BE ........ [[32mPASS[0m in 0.10s]
+[0m13:02:53  7 of 22 START test accepted_values_stg_customers_loyalty_tier__bronze__silver__gold__platinum  [RUN]
+[0m13:02:53  8 of 22 START test not_null_stg_customers_customer_id .......................... [RUN]
+[0m13:02:53  8 of 22 PASS not_null_stg_customers_customer_id ................................ [[32mPASS[0m in 0.08s]
+[0m13:02:53  9 of 22 START test unique_stg_customers_customer_id ............................ [RUN]
+[0m13:02:53  7 of 22 PASS accepted_values_stg_customers_loyalty_tier__bronze__silver__gold__platinum  [[32mPASS[0m in 0.11s]
+[0m13:02:53  10 of 22 START test accepted_values_stg_orders_status__pending__shipped__delivered__returned__cancelled  [RUN]
+[0m13:02:53  9 of 22 PASS unique_stg_customers_customer_id .................................. [[32mPASS[0m in 0.07s]
+[0m13:02:53  11 of 22 START test not_null_stg_orders_customer_id ............................ [RUN]
+[0m13:02:53  10 of 22 PASS accepted_values_stg_orders_status__pending__shipped__delivered__returned__cancelled  [[32mPASS[0m in 0.09s]
+[0m13:02:53  12 of 22 START test not_null_stg_orders_order_id ............................... [RUN]
+[0m13:02:53  11 of 22 PASS not_null_stg_orders_customer_id .................................. [[32mPASS[0m in 0.06s]
+[0m13:02:53  13 of 22 START test unique_stg_orders_order_id ................................. [RUN]
+[0m13:02:53  12 of 22 PASS not_null_stg_orders_order_id ..................................... [[32mPASS[0m in 0.09s]
+[0m13:02:53  13 of 22 PASS unique_stg_orders_order_id ....................................... [[32mPASS[0m in 0.06s]
+[0m13:02:53  14 of 22 START sql table model main.fct_orders ................................. [RUN]
+[0m13:02:54  14 of 22 OK created sql table model main.fct_orders ............................ [[32mOK[0m in 0.13s]
+[0m13:02:54  15 of 22 NO-OP exposure finance_monthly_revenue_report ......................... [[33mNO-OP[0m in 0.00s]
+[0m13:02:54  16 of 22 NO-OP exposure sales_dashboard ........................................ [[33mNO-OP[0m in 0.00s]
+[0m13:02:54  17 of 22 START test not_null_fct_orders_order_id ............................... [RUN]
+[0m13:02:54  18 of 22 START test unique_fct_orders_order_id ................................. [RUN]
+[0m13:02:54  17 of 22 PASS not_null_fct_orders_order_id ..................................... [[32mPASS[0m in 0.03s]
+[0m13:02:54  18 of 22 PASS unique_fct_orders_order_id ....................................... [[32mPASS[0m in 0.04s]
+[0m13:02:54  19 of 22 START sql table model main.dim_customers .............................. [RUN]
+[0m13:02:54  19 of 22 OK created sql table model main.dim_customers ......................... [[32mOK[0m in 0.06s]
+[0m13:02:54  21 of 22 START test not_null_dim_customers_customer_id ......................... [RUN]
+[0m13:02:54  20 of 22 NO-OP exposure churn_prediction_model ................................. [[33mNO-OP[0m in 0.00s]
+[0m13:02:54  22 of 22 START test unique_dim_customers_customer_id ........................... [RUN]
+[0m13:02:54  22 of 22 PASS unique_dim_customers_customer_id ................................. [[32mPASS[0m in 0.02s]
+[0m13:02:54  21 of 22 PASS not_null_dim_customers_customer_id ............................... [[32mPASS[0m in 0.04s]
+[0m13:02:54  
+[0m13:02:54  Finished running 3 exposures, 2 table models, 12 data tests, 5 view models in 0 hours 0 minutes and 1.13 seconds (1.13s).
+[0m13:02:54  
+[0m13:02:54  [32mCompleted successfully[0m
+[0m13:02:54  
+[0m13:02:54  Done. PASS=19 WARN=0 ERROR=0 SKIP=0 NO-OP=3 REUSED=0 TOTAL=22
+[0m13:02:54  [[33mWARNING[0m][DeprecationsSummary]: Deprecated functionality
+Summary of encountered deprecations:
+- MissingArgumentsPropertyInGenericTestDeprecation: 1 occurrence
+To see all deprecation instances instead of just the first occurrence of each,
+run command again with the `--show-all-deprecations` flag. You may also need to
+run with `--no-partial-parse` as some deprecations are only encountered during
+parsing.

@@ -1,0 +1,192 @@
+version: 2
+models:
+- name: stg_customers
+  description: Accounts cleaned from raw customer records; exact duplicates are removed
+    and country codes, dates, consent and loyalty tiers are normalized.
+  meta:
+    owner: Sara Martin (Head of Sales)
+    steward: Karim Benali (Analytics Engineer)
+    domain: customer
+    tier: gold
+  columns:
+  - name: customer_id
+    description: Stable ShopFast account identifier; one person can have multiple
+      accounts.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+    data_tests:
+    - unique
+    - not_null
+  - name: first_name
+    description: Customer given name in proper case.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+  - name: last_name
+    description: Customer family name in proper case.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+  - name: email
+    description: Login email address, trimmed and lower-cased.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+  - name: phone
+    description: Customer telephone number as supplied by ShopFast.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+  - name: birth_date
+    description: Customer date of birth parsed as a date.
+    tags:
+    - pii
+    meta:
+      classification: restricted
+  - name: city
+    description: Customer city as supplied by ShopFast.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+  - name: country_code
+    description: Normalized ISO 3166-1 alpha-2 customer country code.
+    data_tests:
+    - accepted_values:
+        values:
+        - FR
+        - DE
+        - ES
+        - BE
+  - name: signup_date
+    description: Date the customer account was created.
+  - name: has_marketing_consent
+    description: Whether the customer has opted in to marketing.
+  - name: loyalty_tier
+    description: Normalized loyalty programme tier.
+    data_tests:
+    - accepted_values:
+        values:
+        - bronze
+        - silver
+        - gold
+        - platinum
+- name: stg_orders
+  description: One row per ShopFast order after duplicate order IDs are reduced to
+    the earliest dated record; dates, IDs and euro amounts are typed.
+  meta:
+    owner: Sara Martin (Head of Sales)
+    steward: Karim Benali (Analytics Engineer)
+    domain: sales
+    tier: gold
+  columns:
+  - name: order_id
+    description: Unique ShopFast order identifier.
+    data_tests:
+    - unique
+    - not_null
+  - name: customer_id
+    description: ShopFast account identifier associated with the order.
+    tags:
+    - pii
+    meta:
+      classification: confidential
+    data_tests:
+    - not_null
+  - name: order_date
+    description: Calendar date on which the order was placed.
+  - name: status
+    description: Normalized order lifecycle status; canceled is standardized to cancelled.
+    data_tests:
+    - accepted_values:
+        values:
+        - pending
+        - shipped
+        - delivered
+        - returned
+        - cancelled
+  - name: channel
+    description: Sales channel through which the order was placed.
+  - name: shipping_country
+    description: Two-letter destination country code recorded on the order.
+  - name: total_amount_eur
+    description: Order total in euros, including VAT, with two decimal places.
+- name: stg_order_items
+  description: One row per order line with integer item, order, product and quantity
+    identifiers and a euro unit price.
+  meta:
+    owner: Sara Martin (Head of Sales)
+    steward: Karim Benali (Analytics Engineer)
+    domain: sales
+    tier: silver
+  columns:
+  - name: order_item_id
+    description: Unique identifier for an order line.
+  - name: order_id
+    description: Order identifier to which this line belongs.
+  - name: product_id
+    description: Identifier of the product on this line.
+  - name: quantity
+    description: Number of units of the product on this line.
+  - name: unit_price_eur
+    description: Price per unit in euros with two decimal places.
+- name: stg_payments
+  description: One row per payment-provider event; amount is denominated in euros
+    (not cents), with captured and refunded events retained.
+  meta:
+    owner: Paul Girard (Head of Finance)
+    steward: Karim Benali (Analytics Engineer)
+    domain: finance
+    tier: gold
+  columns:
+  - name: payment_id
+    description: Unique identifier assigned to a payment event.
+  - name: order_id
+    description: Order identifier associated with the payment event.
+  - name: payment_date
+    description: Calendar date on which the payment event was recorded.
+  - name: method
+    description: Payment instrument or provider method used.
+  - name: amount
+    description: Payment event amount in euros (EUR), to two decimal places; this
+      value is not cents.
+  - name: currency
+    description: ISO 4217 currency code for the payment event.
+  - name: card_last4
+    description: Last four digits of a payment card when supplied; may be absent for
+      non-card methods.
+    tags:
+    - pii
+    meta:
+      classification: restricted
+  - name: payment_status
+    description: Whether the event is captured or refunded.
+- name: stg_products
+  description: Product catalogue rows with typed identifiers, normalized categories,
+    EUR list prices and active flags.
+  meta:
+    owner: Product Operations
+    steward: Karim Benali (Analytics Engineer)
+    domain: product
+    tier: silver
+  columns:
+  - name: product_id
+    description: Unique identifier for a ShopFast product.
+  - name: sku
+    description: Stock-keeping unit used to identify the product.
+  - name: product_name
+    description: Customer-facing product name.
+  - name: category
+    description: Product category normalized to proper case.
+  - name: list_price_eur
+    description: Catalogue list price in euros with two decimal places.
+  - name: supplier
+    description: Name of the product supplier.
+  - name: is_active
+    description: Whether the product is currently active in the catalogue.

@@ -1,0 +1,9 @@
+Models: 7 | documented columns: 2/5
+FAIL dim_customers: missing model description
+FAIL dim_customers: missing meta.owner
+FAIL stg_products: missing meta.owner
+FAIL stg_orders: missing model description
+FAIL stg_orders: missing meta.owner
+FAIL stg_order_items: missing meta.owner
+FAIL stg_payments: missing meta.owner
+GOVERNANCE CHECK: FAILED (7 problems)

@@ -1,0 +1,8 @@
+[0m13:02:35  Running with dbt=1.12.7
+[0m13:02:36  Registered adapter: duckdb=1.11.1
+[0m13:02:36  Found 7 models, 13 data tests, 5 sources, 3 exposures, 513 macros
+[0m13:02:36  
+[0m13:02:36  Concurrency: 2 threads (target='dev')
+[0m13:02:36  
+[0m13:02:37  Building catalog
+[0m13:02:37  Catalog written to /home/user/ctpwork/final/shopfast_dbt/target/catalog.json
